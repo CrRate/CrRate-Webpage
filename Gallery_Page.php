@@ -19,22 +19,26 @@
                 $db = mysqli_connect("localhost", "root", "", "crabDB");
                 $result = $db or die("Could not connect to database." .mysqli_error());
                 mysqli_select_db($result,"crabDB") or die("Could not select the database." .mysqli_error());
-                $image_query = mysqli_query($result,"SELECT * FROM images");
+                $image_query = mysqli_query($result,"SELECT * FROM images ORDER BY rating DESC");
                 #var_dump($image_query);
                 #if($image_query instanceof mysqli_result) {
                 $rows = mysqli_fetch_array($image_query);
                 $row = mysqli_num_rows($image_query);
-                while($rows = mysqli_fetch_array($image_query)){
-                    $img_name = $rows['description'];
-                    $img_src = $rows['image_path'];
-                    ?>
-                    <div class="img-block">
-                    <img src="<?php echo $img_src; ?>" alt="" title="<?php echo $img_name; ?>" class="img-responsive" />
-                    <p><strong><?php echo $img_name; ?></strong></p>
-                    </div>
-                    
-                    <?php
-                } 
+                if($row>0) {
+                    do {
+                        $img_name = $rows['description'];
+                        $img_src = $rows['image_path'];
+                        $image_rating = $rows['rating'];
+                        ?>
+                        <div class="img-block">
+                        <img src="<?php echo $img_src; ?>" alt="" title="<?php echo $img_name; ?>" class="img-responsive" />
+                        <p><strong>Rating: <?php echo $image_rating; ?><br><?php echo $img_name; ?></strong></p>
+                        </div>
+                        
+                        <?php
+                    } while($rows = mysqli_fetch_array($image_query));
+                }
+                 
                 
                 #}
             ?>
