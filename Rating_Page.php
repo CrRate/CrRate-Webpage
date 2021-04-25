@@ -9,7 +9,7 @@
         $new_rating = mysqli_fetch_array(mysqli_query($conn,"SELECT * FROM images"))['rating']+1;
         echo "new rating: $new_rating";
         echo "image id: $image_id";
-        $sql = "UPDATE images SET rating=$new_rating WHERE id = '$image_id'";
+        $sql = "UPDATE images SET rating=rating+1 WHERE id = '$image_id'";
 
         if (mysqli_query($conn, $sql)) {
         echo "Record updated successfully";
@@ -18,68 +18,9 @@
         }
 
         mysqli_close($conn);
-        // Get image name
-        /*$image = $_FILES['image']['name'];
-        #define ('SITE_ROOT', realpath(dirname($image)));
-        // Get text
-        $image_text = mysqli_real_escape_string($db, $_POST['image_text']);
-
-        // image file directory
-        $target = 'images/'.basename($image);
-        $startingRating = 0;
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
-            $msg = "Image uploaded successfully";
-        }else{
-            $msg = "Failed to upload image";
-        }
-
-        $sql = "INSERT INTO images (image, image_path, description, rating) VALUES (?,?,?,?)";
-
-        $stmt = mysqli_prepare($db, $sql);
-        if (false===$stmt) {
-            die('prepare() failed: ' . mysqli_error($db));
-        }
-        mysqli_stmt_bind_param($stmt, 'bssi', $image, $target, $image_text, $startingRating);
-        mysqli_stmt_execute($stmt);
-        
-        // execute query
-        #mysqli_query($db, $sql) or die(mysqli_error($db));
-
-        
-        #echo $msg;
-        */
     }
     if (isset($_POST['next'])) {
-        /*
-        // Get image name
-        $image = $_FILES['image']['name'];
-        #define ('SITE_ROOT', realpath(dirname($image)));
-        // Get text
-        $image_text = mysqli_real_escape_string($db, $_POST['image_text']);
 
-        // image file directory
-        $target = 'images/'.basename($image);
-        $startingRating = 0;
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
-            $msg = "Image uploaded successfully";
-        }else{
-            $msg = "Failed to upload image";
-        }
-
-        $sql = "INSERT INTO images (image, image_path, description, rating) VALUES (?,?,?,?)";
-
-        $stmt = mysqli_prepare($db, $sql);
-        if (false===$stmt) {
-            die('prepare() failed: ' . mysqli_error($db));
-        }
-        mysqli_stmt_bind_param($stmt, 'bssi', $image, $target, $image_text, $startingRating);
-        mysqli_stmt_execute($stmt);*/
-        
-        // execute query
-        #mysqli_query($db, $sql) or die(mysqli_error($db));
-
-        
-        #echo $msg;
     }
 ?>
 <html>
@@ -125,7 +66,7 @@
             ?>
             <form method="POST" action="">
                 <div>
-                    <button type="submit" name="upvote" value=<?php $image_id;?>>Upvote</button>
+                    <button type="submit" name="upvote" value=<?php echo $image_id; ?>>Upvote</button>
                     <button type="submit" name="next">Next</button>
                 </div>
             </form>
