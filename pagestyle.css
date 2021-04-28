@@ -1,0 +1,25 @@
+body {
+    background-color: rgb(255, 159, 124);
+}
+
+h1 {
+    text-align: center;
+    color: #df480c;
+}
+
+#tabs {
+    background-color: #333333;
+}
+
+.menu {
+    float: left;
+    margin: 10px;
+    font-size: 20px;
+    background-color: #df480c; 
+}
+
+.menuend {
+    margin: 10px;
+    font-size: 20px;
+    background-color: #df480c; 
+}

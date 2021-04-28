@@ -1,76 +1,76 @@
-<?php
-    if (isset($_POST['upvote'])) {
-        $conn = mysqli_connect("localhost", "root", "", "crabDB");
-        // Check connection
-        if (!$conn) {
-        die("Connection failed: " . mysqli_connect_error());
-        }
-        $image_id = $_POST['upvote'];
-        $new_rating = mysqli_fetch_array(mysqli_query($conn,"SELECT * FROM images"))['rating']+1;
-        echo "new rating: $new_rating";
-        echo "image id: $image_id";
-        $sql = "UPDATE images SET rating=rating+1 WHERE id = '$image_id'";
-
-        if (mysqli_query($conn, $sql)) {
-        echo "Record updated successfully";
-        } else {
-        echo "Error updating record: " . mysqli_error($conn);
-        }
-
-        mysqli_close($conn);
-    }
-    if (isset($_POST['next'])) {
-
-    }
-?>
 <html>
+    <head>
+        <script src="js/jquery-1.11.0.js"></script>
+        <script>
+            var imageAmount = 0;
+
+            $.ajax({
+                method: "POST",
+                url: "getimageamount.php"
+            }).done(function( response ) {
+                    imageAmount = response;
+            });
+
+            function randomImageID() {
+                return Math.ceil(Math.random()*imageAmount);
+            }
+
+            var imageID = randomImageID();
+
+            function rateImage(rating) {
+                console.log("rate: " + rating);
+                console.log("image amount: " + imageAmount);
+                $.ajax({
+                    url: "rateimage.php",
+                    type: "POST",
+                    data:"rating="+rating+' &imageID='+imageID, 
+                    success: function(response) {
+                        console.log(response);
+                    }
+                });
+                showRandomImage();
+            }
+
+            function showRandomImage() {
+                if(imageAmount>0) {
+                    imageID = randomImageID();
+                    $.ajax({
+                        type: "GET",
+                        url: 'getimage.php',
+                        data: "imageID="+imageID,
+                        success: function(response) {
+                            document.getElementById("randomImage").innerHTML=response;
+                        }
+                    });
+                }
+            }
+            window.onload = showRandomImage;
+        </script>
+        <link rel="stylesheet" type="text/css" href="pagestyle.css">
+        <title>Rating</title>
+    </head>
     <body>
         <h1>
-            "This is the Rating Page"
+            Rating Page
         </h1>
-        <div id="tabs">
-            <form method="POST" action="Upload_Page.php">
-                <input type="submit" value = "Upload"/>
-            </form>
-            <form method="POST" action="Rating_Page.php">
-                <input type="submit" value = "Rate"/>
-            </form>
-            <form method="POST" action="Gallery_Page.php">
-                <input type="submit" value = "Gallery"/>
-            </form>
-        </div>
+        <?php include 'menu.php'; ?>
         <div id="content">
             <!-- Show random image -->
-            <?php
-                $db = mysqli_connect("localhost", "root", "", "crabDB");
-                $result = $db or die("Could not connect to database." .mysqli_error());
-                mysqli_select_db($result,"crabDB") or die("Could not select the database." .mysqli_error());
-                $random_image_query = mysqli_query($result,"SELECT * FROM images ORDER BY RAND() LIMIT 1");
-                #var_dump($image_query);
-                #if($image_query instanceof mysqli_result) {
-                $rows = mysqli_fetch_array($random_image_query);
-                $row = mysqli_num_rows($random_image_query);
-                if($row>0) {
-                    $img_name = $rows['description'];
-                    $img_src = $rows['image_path'];
-                    $image_rating = $rows['rating'];
-                    $image_id = $rows['id'];
-                    ?>
-                    <div class="img-block">
-                    <img src="<?php echo $img_src; ?>" alt="" title="<?php echo $img_name; ?>" class="img-responsive" />
-                    <p><strong>Rating: <?php echo $image_rating; ?><br><?php echo $img_name; ?></strong></p>
-                    </div>
-                    
-                    <?php
-                }
-            ?>
-            <form method="POST" action="">
+            <div id="randomImage">
+            </div>
+            <p>Rate the image:</p>
+            <form>
                 <div>
-                    <button type="submit" name="upvote" value=<?php echo $image_id; ?>>Upvote</button>
-                    <button type="submit" name="next">Next</button>
+                    <input type="button" id="vote1" onclick="rateImage(1);" value=1></button>
+                    <input type="button" id="vote2" onclick="rateImage(2);" value=2></input>
+                    <input type="button" id="vote3" onclick="rateImage(3);" value=3></input>
+                    <input type="button" id="vote4" onclick="rateImage(4);" value=4></input>
+                    <input type="button" id="vote5" onclick="rateImage(5);" value=5></input>
+                    <input type="button" id="skip" onclick="showRandomImage();" value="Skip Image"></input>
                 </div>
             </form>
-            <?php echo $image_id;?>
         </div>
+        <script src="js/jquery-1.11.0.js"></script>
+        <script src="js/animate.js"></script>
     </body>
 </html>
